@@ -10,8 +10,8 @@ data:
   class_path: project.data.MyDataModule
   init_args:
     root: data/
-    filename: "data.csv"
-    batch_size: 32
+    filename: data.csv
+    batch_size: 8
     num_workers: 1
 optimizer:
   class_path: torch.optim.AdamW
@@ -24,7 +24,7 @@ trainer:
     class_path: lightning.pytorch.loggers.WandbLogger
     init_args:
       save_dir: 'logs'
-      offline: false
+      offline: true
       project: project
       log_model: false
       prefix: ''

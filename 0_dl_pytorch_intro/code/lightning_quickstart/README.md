@@ -22,7 +22,7 @@ lightning_quickstart/
 ```sh
 mamba create -n project python=3.11
 mamba activate project
-pip install lightning torch tqdm 'jsonargparse[signatures]' torchmetrics transformers deepspeed
+pip install lightning torch tqdm 'jsonargparse[signatures]' torchmetrics transformers
 pip install -e .
 ```
 
