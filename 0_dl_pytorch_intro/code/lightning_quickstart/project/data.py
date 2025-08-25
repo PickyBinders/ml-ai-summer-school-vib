@@ -24,7 +24,7 @@ class MyDataset(torch.utils.data.Dataset):
             data = self.transform(data)
         if self.target_transform:
             label = self.target_transform(label)
-        return data, label
+        return {"features": data, "label": label}
 
 
 class MyDataModule(LightningDataModule):
@@ -44,11 +44,12 @@ class MyDataModule(LightningDataModule):
         self.data = pd.read_csv(self.root / filename)
 
     def prepare_data(self) -> None:
-        for split in ["train", "val", "test"]:
+        for split in ["train", "val"]:
             # do preprocessing stuff here and save to files
             pass
 
     def setup(self, stage: str | None = None):
+        # Split data into train and val here
         if stage == "fit" or stage is None:
             self.train_dataset = MyDataset(
                 self.data[self.data["split"] == "train"],
@@ -56,11 +57,6 @@ class MyDataModule(LightningDataModule):
             )
             self.val_dataset = MyDataset(
                 self.data[self.data["split"] == "val"],
-                self.data_dir,
-            )
-        elif stage == "test":
-            self.test_dataset = MyDataset(
-                self.data[self.data["split"] == "test"],
                 self.data_dir,
             )
 
@@ -76,13 +72,6 @@ class MyDataModule(LightningDataModule):
     def val_dataloader(self):
         return DataLoader(
             self.val_dataset,
-            batch_size=self.batch_size,
-            num_workers=self.num_workers,
-        )
-
-    def test_dataloader(self):
-        return DataLoader(
-            self.test_dataset,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
         )

@@ -40,14 +40,15 @@ class MyModel(LightningModule):
         return self.model(x)
 
     def step(self, batch, batch_idx, split):
-        output = self(batch)
-        loss = F.binary_cross_entropy_with_logits(output, batch["label"])
-        self.log(f"{split}/loss", loss, batch_size=batch["batch_size"], sync_dist=True)
+        output = self(batch["features"])
+        labels = batch["label"].unsqueeze(1)
+        loss = F.binary_cross_entropy_with_logits(output, labels.float())
+        self.log(f"{split}/loss", loss)
         if split == "train":
-            log_output = self.train_metrics(output, batch["label"])
-            self.log_dict(log_output, batch_size=batch["batch_size"])
+            log_output = self.train_metrics(output, labels)
+            self.log_dict(log_output)
         else:
-            log_output = self.val_metrics.update(output, batch["label"])
+            log_output = self.val_metrics.update(output, labels)
         return loss
 
     def on_validation_epoch_end(self):

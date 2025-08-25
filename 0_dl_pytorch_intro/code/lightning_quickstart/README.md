@@ -29,5 +29,5 @@ pip install -e .
 ## Training
 
 ```sh
-srun python project/model.py fit -c config.yaml --trainer.logger.name=my_run_name
+python project/model.py fit -c config.yaml --trainer.logger.name=my_run_name
 ```
